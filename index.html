@@ -1042,36 +1042,6 @@
             font-weight: 500;
         }
 
-        .about-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 40px;
-            padding-top: 32px;
-            border-top: 1px solid var(--border);
-            opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
-        }
-        .about-stats.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .about-stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.03em;
-        }
-        .about-stat-value .accent {
-            color: var(--emerald);
-        }
-        .about-stat-label {
-            font-size: 13px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-            margin-top: 4px;
-        }
 
         /* =========================================
                FEATURES
@@ -1293,6 +1263,12 @@
         .waitlist-input:focus {
             border-color: var(--emerald);
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+        .waitlist-textarea:focus {
+            border-color: var(--emerald);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            outline: none;
         }
         .waitlist-input.error {
             border-color: #ef4444;
@@ -1671,13 +1647,6 @@
                 order: -1;
                 aspect-ratio: 16/9;
             }
-            .about-stats {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
-            }
-            .about-stat-value {
-                font-size: 22px;
-            }
 
             .features-grid {
                 grid-template-columns: 1fr;
@@ -1752,9 +1721,6 @@
             .dash-alert {
                 font-size: 11px;
                 padding: 6px 10px;
-            }
-            .about-stat-value {
-                font-size: 20px;
             }
             .feature-title {
                 font-size: 18px;
@@ -2051,20 +2017,6 @@
                         Born in Dubai. Built for UAE businesses. Powered by intelligence that never sleeps.
                     </p>
 
-                    <div class="about-stats" id="aboutStats">
-                        <div>
-                            <div class="about-stat-value">AED <span class="accent">2.4B+</span></div>
-                            <div class="about-stat-label">Transaction Volume Analyzed</div>
-                        </div>
-                        <div>
-                            <div class="about-stat-value"><span class="accent">99.7%</span></div>
-                            <div class="about-stat-label">Prediction Accuracy</div>
-                        </div>
-                        <div>
-                            <div class="about-stat-value"><span class="accent">12K+</span></div>
-                            <div class="about-stat-label">Businesses Onboarded</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -2161,20 +2113,50 @@
                 </p>
 
                 <form class="waitlist-form" id="waitlistForm">
-                    <div class="waitlist-input-group">
-                        <input
-                        type="email"
-                        class="waitlist-input"
-                        id="waitlistEmail"
-                        placeholder="Enter your email address"
-                        required
-                        autocomplete="email"
-                        >
+                    <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
+                        <div class="waitlist-input-group">
+                            <input
+                            type="text"
+                            class="waitlist-input"
+                            id="waitlistName"
+                            placeholder="Your name"
+                            required
+                            autocomplete="name"
+                            >
+                        </div>
+                        <div class="waitlist-input-group">
+                            <input
+                            type="email"
+                            class="waitlist-input"
+                            id="waitlistEmail"
+                            placeholder="Email address"
+                            required
+                            autocomplete="email"
+                            >
+                        </div>
+                        <div class="waitlist-input-group">
+                            <input
+                            type="text"
+                            class="waitlist-input"
+                            id="waitlistCompany"
+                            placeholder="Company name"
+                            autocomplete="organization"
+                            >
+                        </div>
+                        <div class="waitlist-input-group">
+                            <textarea
+                            class="waitlist-input waitlist-textarea"
+                            id="waitlistChallenge"
+                            placeholder="What's your biggest financial challenge?"
+                            rows="4"
+                            style="resize:vertical;min-height:120px;font-family:inherit;"
+                            ></textarea>
+                        </div>
+                        <button type="submit" class="waitlist-btn" id="waitlistSubmit" style="width:100%;justify-content:center;">
+                            <span class="btn-text">Secure My Spot</span>
+                            <span class="spinner"></span>
+                        </button>
                     </div>
-                    <button type="submit" class="waitlist-btn" id="waitlistSubmit">
-                        <span class="btn-text">Secure My Spot</span>
-                        <span class="spinner"></span>
-                    </button>
                 </form>
 
                 <div class="waitlist-trust" id="waitlistTrust">
@@ -2436,7 +2418,7 @@
             // Observe all elements with animation classes
             document.querySelectorAll(
                 '.section-label, .glow-line, .section-title, .section-subtitle, ' +
-                '.about-text, .about-visual, .about-stats, ' +
+                '.about-text, .about-visual, ' +
                 '.waitlist-form, .waitlist-trust, ' +
                 '.contact-info, .contact-map, ' +
                 '.fade-in, .fade-in-left, .fade-in-right'
@@ -2486,32 +2468,61 @@
         // =========================================
         (function() {
             const form = document.getElementById('waitlistForm');
+            const nameInput = document.getElementById('waitlistName');
             const emailInput = document.getElementById('waitlistEmail');
+            const companyInput = document.getElementById('waitlistCompany');
+            const challengeInput = document.getElementById('waitlistChallenge');
             const submitBtn = document.getElementById('waitlistSubmit');
             const successEl = document.getElementById('waitlistSuccess');
             const formEl = document.querySelector('.waitlist-form');
             const trustEl = document.getElementById('waitlistTrust');
+            const allInputs = [nameInput, emailInput, companyInput, challengeInput];
+
+            function clearErrors() {
+                allInputs.forEach(function(input) {
+                    if (input) input.classList.remove('error');
+                });
+            }
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+                clearErrors();
 
+                const name = nameInput.value.trim();
                 const email = emailInput.value.trim();
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-                // Clear error
-                emailInput.classList.remove('error');
+                let hasError = false;
+
+                if (!name) {
+                    nameInput.classList.add('error');
+                    hasError = true;
+                }
 
                 if (!email) {
                     emailInput.classList.add('error');
-                    emailInput.focus();
+                    if (!hasError) emailInput.focus();
+                    hasError = true;
+                } else if (!emailRegex.test(email)) {
+                    emailInput.classList.add('error');
+                    if (!hasError) emailInput.focus();
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    if (!name) nameInput.focus();
                     return;
                 }
 
-                if (!emailRegex.test(email)) {
-                    emailInput.classList.add('error');
-                    emailInput.focus();
-                    return;
-                }
+                // Collect form data
+                const formData = {
+                    name: name,
+                    email: email,
+                    company: companyInput.value.trim(),
+                    challenge: challengeInput.value
+                };
+
+                console.log('Waitlist submission:', formData);
 
                 // Loading state
                 submitBtn.classList.add('loading');
@@ -2528,13 +2539,23 @@
                     successEl.classList.add('visible');
 
                     // Reset form
+                    nameInput.value = '';
                     emailInput.value = '';
+                    companyInput.value = '';
+                    challengeInput.value = '';
                 }, 1500);
             });
 
             // Remove error state on input
-            emailInput.addEventListener('input', function() {
-                emailInput.classList.remove('error');
+            allInputs.forEach(function(input) {
+                if (input) {
+                    input.addEventListener('input', function() {
+                        input.classList.remove('error');
+                    });
+                    input.addEventListener('change', function() {
+                        input.classList.remove('error');
+                    });
+                }
             });
         })();
 
