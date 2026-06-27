@@ -1403,6 +1403,29 @@
             gap: 60px;
             align-items: center;
         }
+        .contact-grid--single {
+            grid-template-columns: 1fr;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .contact-grid--single .contact-info {
+            text-align: center;
+        }
+        .contact-grid--single .contact-info h3 {
+            text-align: center;
+        }
+        .contact-grid--single .contact-info p {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .contact-grid--single .glow-line {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .contact-grid--single .section-label {
+            justify-content: center;
+        }
         .contact-info {
             opacity: 0;
             transform: translateY(20px);
@@ -1462,66 +1485,32 @@
             flex-shrink: 0;
         }
         .contact-map {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            aspect-ratio: 4/3;
-            background: linear-gradient(135deg, rgba(28, 28, 30, 0.6), rgba(20, 20, 22, 0.8));
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: translateX(30px);
-            transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+            display: none;
         }
-        .contact-map.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .contact-map-content {
-            text-align: center;
-            padding: 32px;
-        }
-        .contact-map-marker {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.14);
-            color: var(--emerald);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-        }
-        .contact-map-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-        .contact-map-sub {
+
+        /* =========================================
+               TOAST
+            ========================================= */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--emerald);
+            color: var(--black);
             font-size: 14px;
-            color: var(--text-tertiary);
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 10px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.35);
         }
-        .location-pill-row {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .location-pill {
-            padding: 4px 12px;
-            border-radius: 100px;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.1);
-            color: var(--emerald);
-            font-size: 11px;
-            font-weight: 500;
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* =========================================
@@ -1699,10 +1688,6 @@
             .contact-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
-            }
-            .contact-map {
-                order: -1;
-                aspect-ratio: 16/9;
             }
 
             .footer-inner {

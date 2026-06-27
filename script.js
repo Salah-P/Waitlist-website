@@ -286,4 +286,59 @@
             });
         });
 
+        // =========================================
+        // COPY EMAIL TO CLIPBOARD
+        // =========================================
+        (function() {
+            const copyBtn = document.getElementById('copyEmailBtn');
+            const toast = document.getElementById('toast');
+            if (!copyBtn || !toast) return;
 
+            copyBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const email = 'hello@infinityuae.ai';
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(email).then(function() {
+                        showToast();
+                    }).catch(function() {
+                        fallbackCopy(email);
+                    });
+                } else {
+                    fallbackCopy(email);
+                }
+            });
+
+            function fallbackCopy(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (err) {
+                    console.error('Failed to copy email');
+                }
+                document.body.removeChild(textarea);
+            }
+
+            function showToast() {
+                toast.classList.add('show');
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+        })();
+
+        // =========================================
+        // CONSOLE BRANDING
+        // =========================================
+        console.log(
+            '%c inFINity %c AI-Powered Financial Intelligence ',
+            'background:#10b981;color:#0a0a0b;font-size:16px;font-weight:700;padding:8px 12px;border-radius:4px 0 0 4px;',
+            'background:#1c1c1e;color:#f4f4f5;font-size:16px;font-weight:400;padding:8px 12px;border-radius:0 4px 4px 0;'
+        );
+        console.log('🚀 Built for UAE businesses. Financial clarity, powered by AI.');
