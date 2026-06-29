@@ -217,22 +217,48 @@
                 submitBtn.classList.add('loading');
                 submitBtn.disabled = true;
 
-                // Simulate API call
-                setTimeout(function() {
+                // Send to Supabase
+                const supabaseUrl = 'https://nvxmcimtlrljzxpzrjxu.supabase.co';
+                const supabaseKey = 'sb_publishable_o88DzXGhoIZA6JjG33MmXQ_bO_wuEie';
+
+                fetch(supabaseUrl + '/rest/v1/Waitlist_Data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': supabaseKey,
+                        'Authorization': 'Bearer ' + supabaseKey,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        Name: name,
+                        Email: email,
+                        Company_Name: companyInput.value.trim(),
+                        Financial_Problem: challengeInput.value.trim()
+                    })
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Failed to submit: ' + response.status);
+                    }
+                    // Success
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
 
-                    // Hide form, show success
                     formEl.style.display = 'none';
                     trustEl.style.display = 'none';
                     successEl.classList.add('visible');
 
-                    // Reset form
                     nameInput.value = '';
                     emailInput.value = '';
                     companyInput.value = '';
                     challengeInput.value = '';
-                }, 1500);
+                })
+                .catch(function(error) {
+                    console.error('Supabase error:', error);
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    alert('Something went wrong. Please try again.');
+                });
             });
 
             // Remove error state on input
@@ -285,6 +311,52 @@
                 }
             });
         });
+
+        // =========================================
+        // SIGNUP COUNTER
+        // =========================================
+        (function() {
+            const numberEl = document.getElementById('signupNumber');
+            if (!numberEl) return;
+
+            const supabaseUrl = 'https://nvxmcimtlrljzxpzrjxu.supabase.co';
+            const supabaseKey = 'sb_publishable_o88DzXGhoIZA6JjG33MmXQ_bO_wuEie';
+
+            function fetchCount() {
+                fetch(supabaseUrl + '/rest/v1/rpc/get_waitlist_count', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': supabaseKey,
+                        'Authorization': 'Bearer ' + supabaseKey
+                    },
+                    body: '{}'
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch count');
+                    }
+                    return response.text();
+                })
+                .then(function(count) {
+                    numberEl.textContent = count;
+                })
+                .catch(function() {
+                    numberEl.textContent = '—';
+                });
+            }
+
+            fetchCount();
+
+            // Increment after successful form submission
+            var origSubmit = document.getElementById('waitlistForm');
+            if (origSubmit) {
+                origSubmit.addEventListener('submit', function() {
+                    // After a short delay to let Supabase process
+                    setTimeout(fetchCount, 2000);
+                });
+            }
+        })();
 
         // =========================================
         // COPY EMAIL TO CLIPBOARD

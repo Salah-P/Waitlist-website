@@ -553,6 +553,27 @@
         .hero-badge .live-dot {
             flex: 0 0 6px;
         }
+        .hero-badge-sep {
+            width: 1px;
+            height: 14px;
+            background: rgba(16, 185, 129, 0.2);
+            margin: 0 4px;
+        }
+        .signup-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .signup-number {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            min-width: 20px;
+            text-align: center;
+        }
+        .signup-label {
+            color: rgba(16, 185, 129, 0.7);
+            font-weight: 400;
+        }
         .live-dot--small {
             width: 5px;
             height: 5px;
